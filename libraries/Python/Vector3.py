@@ -6,8 +6,6 @@ class Vector3:
         self.y = float(y)
         self.z = float(z)
 
-    # --- Basic Operations ---
-
     def __add__(self, other):
         return Vector3(self.x + other.x, self.y + other.y, self.z + other.z)
 
@@ -51,7 +49,7 @@ class Vector3:
         """Returns a unit vector (length = 1) pointing the same direction"""
         mag = self.magnitude()
         if mag == 0:
-            return Vector3(0, 0, 0)  # Zero vector, no direction
+            return Vector3(0, 0, 0)
         return self / mag
 
     def dot(self, other):
@@ -86,7 +84,7 @@ class Vector3:
         mags = self.magnitude() * other.magnitude()
         if mags == 0:
             return 0.0
-        return math.acos(max(-1.0, min(1.0, dot / mags)))  # Clamped to avoid float errors
+        return math.acos(max(-1.0, min(1.0, dot / mags)))
 
     def reflect(self, normal):
         """
@@ -106,8 +104,6 @@ class Vector3:
 
     def copy(self):
         return Vector3(self.x, self.y, self.z)
-
-    # --- Handy Presets ---
 
     @staticmethod
     def zero():

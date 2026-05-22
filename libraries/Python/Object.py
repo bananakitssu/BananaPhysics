@@ -53,7 +53,7 @@ class Object:
         return self._restitution
         
     @Restitution.setter
-    def Restitution(self, new_restitution: Vector3):
+    def Restitution(self, new_restitution: float):
         self._restitution = new_restitution
         
     @property
@@ -80,7 +80,17 @@ class Object:
     def Acceleration (self, new_acceleration: Vector3):
         self._acceleration = new_acceleration
         
-    
+    @property
+    def Friction(self):
+        return self._friction
+        
+    @Friction.setter
+    def Friction(self, new_friction: float):
+        self._friction = new_friction
+        
+    @property
+    def Edges(self):
+        return self.edges
         
     def _update_edges (self):
         s = self._size
