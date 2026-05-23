@@ -6,3 +6,4 @@ class AirData(TypedDict, total=False):
     airWindDirection: Vector3
     airForce: float
     density: float
+    temperature: float
