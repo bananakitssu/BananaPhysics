@@ -6,4 +6,4 @@ from Air import Air
 class WorkspaceData(TypedDict, total=False):
     Objects: List[Object]
     Airs: List[Air]
-    gravity: float
+    Gravity: float

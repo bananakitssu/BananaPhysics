@@ -2,8 +2,8 @@ from typing import TypedDict, Optional
 from Vector3 import Vector3
 
 class AirData(TypedDict, total=False):
-    airArea: Vector3
-    airWindDirection: Vector3
-    airForce: float
-    density: float
-    temperature: float
+    AirArea: Vector3
+    AirWindDirection: Vector3
+    AirForce: float
+    Density: float
+    Temperature: float
