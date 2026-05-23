@@ -69,7 +69,7 @@ class Object:
         return self._velocity
         
     @Velocity.setter
-    def Velocity (self, new_velocity: Vector3)
+    def Velocity (self, new_velocity: Vector3):
         self._velocity = new_velocity
         
     @property
@@ -95,12 +95,12 @@ class Object:
     def _update_edges (self):
         s = self._size
         self.edges = [
-            Vector3(-s.x,  s.y,  s.z)
-            Vector3(-s.x,  s.y, -s.z)
-            Vector3( s.x,  s.y, -s.z)
-            Vector3( s.x,  s.y,  s.z)
-            Vector3( s.x, -s.y,  s.z)
-            Vector3(-s.x, -s.y,  s.z)
-            Vector3(-s.x, -s.y, -s.z)
+            Vector3(-s.x,  s.y,  s.z),
+            Vector3(-s.x,  s.y, -s.z),
+            Vector3( s.x,  s.y, -s.z),
+            Vector3( s.x,  s.y,  s.z),
+            Vector3( s.x, -s.y,  s.z),
+            Vector3(-s.x, -s.y,  s.z),
+            Vector3(-s.x, -s.y, -s.z),
             Vector3( s.x, -s.y, -s.z)
         ]
