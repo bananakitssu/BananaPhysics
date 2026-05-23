@@ -8,7 +8,6 @@ from Workspace import Workspace
 from Object import Object
 from Air import Air
 
-# How many times per second the physics loop runs
 TICKS_PER_SECOND = 60
 
 def LoadWorkspace(workspace: Workspace):

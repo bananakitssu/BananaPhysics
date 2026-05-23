@@ -3,14 +3,15 @@ from ObjectData import ObjectData
 
 class Object:
     def __init__ (self, data: ObjectData = {}):
-        self._position = data.get("position") or Vector3(0, 0, 0)
-        self._rotation = data.get("rotation") or Vector3(0, 0, 0)
-        self._acceleration = data.get("acceleration") or Vector3(0, 0, 0)
-        self._friction = data.get("friction") or 0.5
-        self._restitution = data.get("restitution") or 0.7
-        self._mass = data.get("mass") or 1.0
-        self._velocity = data.get("velocity") or Vector3(0, 0, 0)
-        self._size = data.get("size") or Vector3(1, 1, 1)
+        self._position = data.get("Position") or Vector3(0, 0, 0)
+        self._rotation = data.get("Rotation") or Vector3(0, 0, 0)
+        self._acceleration = data.get("Acceleration") or Vector3(0, 0, 0)
+        self._friction = data.get("Friction") or 0.5
+        self._restitution = data.get("Restitution") or 0.7
+        self._mass = data.get("Mass") or 1.0
+        self._velocity = data.get("Velocity") or Vector3(0, 0, 0)
+        self._size = data.get("Size") or Vector3(1, 1, 1)
+        self._anchored = data.get("Anchored") or False
         
         self.edges = [
             Vector3(-self._size.x,  self._size.y,  self._size.z),
@@ -22,6 +23,14 @@ class Object:
             Vector3(-self._size.x, -self._size.y, -self._size.z),
             Vector3( self._size.x, -self._size.y, -self._size.z)
         ]
+        
+    @property
+    def Anchored (self):
+        return self._anchored
+        
+    @Anchored.setter
+    def Anchored (self, new_bool: bool):
+        self._anchored = new_bool
         
     @property
     def Size (self):

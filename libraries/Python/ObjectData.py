@@ -10,3 +10,4 @@ class ObjectData(TypedDict, total=False):
     Acceleration: Vector3
     Rotation: Vector3
     Size: Vector3
+    Anchored: bool

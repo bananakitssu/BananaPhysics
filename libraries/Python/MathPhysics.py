@@ -23,17 +23,18 @@ class MathPhysics:
         Faster objects feel more drag. Denser air = more drag.
         Formula: drag = 0.5 * density * velocity^2 * drag_coefficient
         """
-        drag_coefficient = 0.47  # roughly a sphere, good default
+        if obj.Anchored:
+            return
+        drag_coefficient = 0.47
         speed_squared = obj.Velocity.magnitude_squared()
 
         if speed_squared == 0:
-            return  # not moving, no drag
+            return
 
         drag_magnitude = 0.5 * air.Density * speed_squared * drag_coefficient
-        drag_direction = -obj.Velocity.normalize()  # opposite to movement
+        drag_direction = -obj.Velocity.normalize()
         drag_force = drag_direction * drag_magnitude
 
-        # a = F / m
         obj.Acceleration = obj.Acceleration + drag_force / obj.Mass
 
     @staticmethod
@@ -42,6 +43,8 @@ class MathPhysics:
         Pushes the object in the wind direction based on wind force.
         Heavier objects are pushed less (F = ma, so a = F/m)
         """
+        if obj.Anchored:
+            return
         wind_force = air.AirWindDirection.normalize() * air.AirWindForce
         obj.Acceleration = obj.Acceleration + wind_force / obj.Mass
 
@@ -53,7 +56,6 @@ class MathPhysics:
         """
         friction = friction_override if friction_override is not None else obj.Friction
 
-        # Only slow down horizontal movement, not vertical (that's gravity's job)
         obj.Velocity = Vector3(
             obj.Velocity.x * (1.0 - friction),
             obj.Velocity.y,
@@ -67,13 +69,12 @@ class MathPhysics:
         Also updates velocity based on acceleration.
         delta_time = time since last frame (keeps physics framerate-independent)
         """
-        # Update velocity from acceleration
+        if obj.Anchored:
+            return
         obj.Velocity = obj.Velocity + obj.Acceleration * delta_time
 
-        # Update position from velocity
         obj.Position = obj.Position + obj.Velocity * delta_time
 
-        # Reset acceleration (forces are recalculated every frame)
         obj.Acceleration = Vector3(0, 0, 0)
 
     @staticmethod
@@ -83,11 +84,9 @@ class MathPhysics:
         surface_normal = the direction the surface is facing (e.g. Vector3(0,1,0) for floor)
         restitution = bounciness (0 = dead stop, 1 = bounces forever, 0.7 = realistic)
         """
-        # Only bounce if object is moving INTO the surface
         if obj.Velocity.dot(surface_normal) >= 0:
-            return  # already moving away, no bounce needed
+            return
 
-        # Reflect velocity off the surface, then reduce by restitution
         reflected = obj.Velocity.reflect(surface_normal)
         obj.Velocity = reflected * obj.Restitution
 

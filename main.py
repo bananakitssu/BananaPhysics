@@ -38,6 +38,17 @@ def run():
 
     box_id = workspace.add(box)
 
+    floor = Object({
+        "Position": Vector3(0, 0, 0),
+        "Size": Vector3(20, 1, 20),
+        "Anchored": True,
+        "Mass": 1.0,
+        "Restitution": 0.7,
+        "Friction": 0.5
+    })
+
+    floor_id = workspace.add(floor)
+
     LoadWorkspace(workspace)
 
     BTDPE_R = threading.Thread(
@@ -49,13 +60,30 @@ def run():
     BTDPE.meshes = {}
     BTDPE.CamX = 0
     BTDPE.CamY = 3
-    BTDPE.CamZ = 5
+    BTDPE.CamZ = 12
+    BTDPE.create_mesh(
+        "cube",
+        floor_id,
+        {"x": 0, "y": 0, "z": 0},
+        {"x": 20, "y": 1, "z": 20},
+        {"x": 0, "y": 0, "z": 0},
+        False, [], "", False, False, [],
+        {"r": 0, "g": 0, "b": 0},
+        {"canTransparent": False, "visible": True, "opacity": 1},
+        []
+    )
     BTDPE.create_mesh("cube", box_id, {"x": 0, "y": 0, "z": 0}, {"x": 1, "y": 1, "z": 1}, {"x": 0, "y": 0, "z": 0}, False, [], "", False, False, [], {"r": 0, "g": 0, "b": 0}, {"canTransparent": False, "visible": True, "opacity": 1}, [])
     BTDPE_R.start()
     
     while True:
         newBoxPosition = workspace.Objects[box_id].Position
-        BTDPE.meshes[box_id]["mesh_position"]["x"] = newBoxPosition["x"]
-        BTDPE.meshes[box_id]["mesh_position"]["y"] = newBoxPosition["y"]
-        BTDPE.meshes[box_id]["mesh_position"]["z"] = newBoxPosition["z"]
+        newFloorPosition = workspace.Objects[floor_id].Position
+        BTDPE.meshes[box_id]["mesh_position"]["x"] = newBoxPosition.x
+        BTDPE.meshes[box_id]["mesh_position"]["y"] = newBoxPosition.y
+        BTDPE.meshes[box_id]["mesh_position"]["z"] = newBoxPosition.z
+        BTDPE.meshes[floor_id]["mesh_position"]["x"] = newFloorPosition.x
+        BTDPE.meshes[floor_id]["mesh_position"]["y"] = newFloorPosition.y
+        BTDPE.meshes[floor_id]["mesh_position"]["z"] = newFloorPosition.z
         time.sleep(1/60)
+        
+run()

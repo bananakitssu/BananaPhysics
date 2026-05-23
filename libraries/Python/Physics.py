@@ -4,6 +4,7 @@
 import time
 from MathPhysics import MathPhysics
 from Workspace import Workspace
+from Collision import Collision
 
 class Physics:
 
@@ -14,18 +15,24 @@ class Physics:
         Called every frame by BananaPhysics.py
         """
         for uuid, obj in workspace.Objects.items():
-            # Skip removed objects
             if obj is None:
                 continue
 
-            # Apply gravity
             MathPhysics.apply_gravity(obj, workspace)
 
-            # Apply air resistance and wind for each air zone
             for air in workspace.Airs:
                 MathPhysics.apply_air_resistance(obj, air)
                 MathPhysics.apply_wind(obj, air)
 
-            # Update position and velocity
             MathPhysics.update_position(obj, delta_time)
+
+            objects = [obj for obj in workspace.Objects.values() if obj is not None]
+    
+            for i in range(len(objects)):
+                for j in range(i + 1, len(objects)):  # i+1 so we don't check the same pair twice
+                    objA = objects[i]
+                    objB = objects[j]
+            
+                    if Collision.check(objA, objB):
+                        Collision.resolve(objA, objB)
 
