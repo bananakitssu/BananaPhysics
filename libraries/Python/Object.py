@@ -1,5 +1,6 @@
 from Vector3 import Vector3
 from ObjectData import ObjectData
+from Rubber import Rubber
 
 class Object:
     def __init__ (self, data: ObjectData = {}):
@@ -12,6 +13,7 @@ class Object:
         self._velocity = data.get("Velocity") or Vector3(0, 0, 0)
         self._size = data.get("Size") or Vector3(1, 1, 1)
         self._anchored = data.get("Anchored") or False
+        self._rubber = data.get("Rubber") or None
         self._uuid = 0
         
         self.edges = [
@@ -32,6 +34,14 @@ class Object:
     @uuid.setter
     def uuid (self, new_uuid):
         self._uuid = new_uuid
+        
+    @property
+    def Rubber (self):
+        return self._rubber
+        
+    @Rubber.setter
+    def Rubber (self, new_rubber: Rubber):
+        self._rubber = new_rubber
         
     @property
     def Anchored (self):

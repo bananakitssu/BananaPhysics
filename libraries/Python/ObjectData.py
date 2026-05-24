@@ -11,3 +11,4 @@ class ObjectData(TypedDict, total=False):
     Rotation: Vector3
     Size: Vector3
     Anchored: bool
+    Rubber: any

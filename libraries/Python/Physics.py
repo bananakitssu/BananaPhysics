@@ -6,6 +6,9 @@ from MathPhysics import MathPhysics
 from Workspace import Workspace
 from Collision import Collision
 from Spring import Spring
+from String import String
+from ObjectConnection import ObjectConnection
+from Rubber import Rubber
 
 class Physics:
 
@@ -39,3 +42,14 @@ class Physics:
 
             for spring in workspace.Springs:
                 spring.step()
+
+            for string in workspace.Strings:
+                string.step()
+                
+            for connection in workspace.Connections:
+                connection.step()
+                
+            for rubber in workspace.Rubbers:
+                for uuid, obj in workspace.Objects.items():
+                    if obj is not None and not obj.Anchored:
+                        rubber.step(obj)

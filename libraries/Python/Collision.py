@@ -33,7 +33,7 @@ class Collision:
             objB.Position.y + objB.Size.y / 2,
             objB.Position.z + objB.Size.z / 2
         )
-        
+
         return (
             aMin.x <= bMax.x and aMax.x >= bMin.x and
             aMin.y <= bMax.y and aMax.y >= bMin.y and
@@ -63,40 +63,51 @@ class Collision:
     def resolve(objA, objB):
         """
         Resolves collision between two objects.
-        - If both are anchored, do nothing
-        - If one is anchored, only the other one bounces
-        - If neither is anchored, both bounce off each other
+        Checks for Rubber components and handles them specially.
         """
         if objA.Anchored and objB.Anchored:
             return
 
         normal = Collision.get_normal(objA, objB)
 
+        rubberA = objA.Rubber if hasattr(objA, 'Rubber') else None
+        rubberB = objB.Rubber if hasattr(objB, 'Rubber') else None
+
         if objA.Anchored:
-            MathPhysics.resolve_bounce(objB, -normal)
-            MathPhysics.apply_friction(objB)
+            if rubberA:
+                rubberA.impact(objB)
+            else:
+                MathPhysics.resolve_bounce(objB, -normal)
+                MathPhysics.apply_friction(objB)
             Collision._push_out(objB, objA, -normal)
 
         elif objB.Anchored:
-            MathPhysics.resolve_bounce(objA, normal)
-            MathPhysics.apply_friction(objA)
+            if rubberB:
+                rubberB.impact(objA)
+            else:
+                MathPhysics.resolve_bounce(objA, normal)
+                MathPhysics.apply_friction(objA)
             Collision._push_out(objA, objB, normal)
 
         else:
-            totalMass = objA.Mass + objB.Mass
+            if rubberA:
+                rubberA.impact(objB)
+            elif rubberB:
+                rubberB.impact(objA)
+            else:
+                totalMass = objA.Mass + objB.Mass
+                ratioA = objB.Mass / totalMass
+                ratioB = objA.Mass / totalMass
 
-            ratioA = objB.Mass / totalMass
-            ratioB = objA.Mass / totalMass
+                velocityA = objA.Velocity
+                velocityB = objB.Velocity
 
-            velocityA = objA.Velocity
-            velocityB = objB.Velocity
+                restitution = (objA.Restitution + objB.Restitution) / 2
+                objA.Velocity = velocityB * ratioA * restitution + velocityA * (1 - ratioA)
+                objB.Velocity = velocityA * ratioB * restitution + velocityB * (1 - ratioB)
 
-            restitution = (objA.Restitution + objB.Restitution) / 2
-            objA.Velocity = velocityB * ratioA * restitution + velocityA * (1 - ratioA)
-            objB.Velocity = velocityA * ratioB * restitution + velocityB * (1 - ratioB)
-
-            MathPhysics.apply_friction(objA)
-            MathPhysics.apply_friction(objB)
+                MathPhysics.apply_friction(objA)
+                MathPhysics.apply_friction(objB)
 
             Collision._push_out(objA, objB, normal)
 
@@ -104,7 +115,6 @@ class Collision:
     def _push_out(moving, stationary, normal):
         """
         Pushes the moving object out of the stationary one so they don't overlap.
-        Without this, objects sink into each other.
         """
         overlapX = (moving.Size.x + stationary.Size.x) / 2 - abs(moving.Position.x - stationary.Position.x)
         overlapY = (moving.Size.y + stationary.Size.y) / 2 - abs(moving.Position.y - stationary.Position.y)

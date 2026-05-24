@@ -13,7 +13,7 @@ target_dir = current_dir / "libraries" / "Python"
 sys.path.append(str(target_dir))
 
 def run():
-    from BananaPhysics import Object, Air, Spring, Workspace, LoadWorkspace
+    from BananaPhysics import Object, Air, Spring, Workspace, LoadWorkspace, Rubber
     from Vector3 import Vector3
 
     workspace = Workspace({
@@ -48,8 +48,19 @@ def run():
 
     floor_id = workspace.add(floor)
     
-    spring = Spring(box, floor, stiffness=15.0, rest_length=2.0, damping=0.5)
-    workspace.add_spring(spring)
+    trampoline = Object({
+        "Position": Vector3(0, 1, 0),
+        "Size": Vector3(10, 1, 10),
+        "Anchored": True,
+        "Restitution": 0.0,
+    })
+
+    rubber = Rubber(trampoline, stiffness=25.0, damping=0.1)
+    trampoline.Rubber = rubber
+    workspace.add_rubber(rubber)
+    
+    #spring = Spring(box, floor, stiffness=15.0, rest_length=2.0, damping=0.5)
+    #workspace.add_spring(spring)
 
     LoadWorkspace(workspace)
 

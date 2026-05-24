@@ -8,8 +8,14 @@ from Workspace import Workspace
 from Object import Object
 from Air import Air
 from Spring import Spring
+from String import String
+from ObjectConnection import ObjectConnection
+from Rubber import Rubber
 
 TICKS_PER_SECOND = 60
+
+def setFPS (fps: int):
+    TICKS_PER_SECOND = fps
 
 def LoadWorkspace(workspace: Workspace):
     """
