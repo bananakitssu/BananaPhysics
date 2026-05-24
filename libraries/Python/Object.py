@@ -12,6 +12,7 @@ class Object:
         self._velocity = data.get("Velocity") or Vector3(0, 0, 0)
         self._size = data.get("Size") or Vector3(1, 1, 1)
         self._anchored = data.get("Anchored") or False
+        self._uuid = 0
         
         self.edges = [
             Vector3(-self._size.x,  self._size.y,  self._size.z),
@@ -23,6 +24,14 @@ class Object:
             Vector3(-self._size.x, -self._size.y, -self._size.z),
             Vector3( self._size.x, -self._size.y, -self._size.z)
         ]
+        
+    @property
+    def uuid (self):
+        return self._uuid
+        
+    @uuid.setter
+    def uuid (self, new_uuid):
+        self._uuid = new_uuid
         
     @property
     def Anchored (self):

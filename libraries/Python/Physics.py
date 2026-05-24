@@ -5,6 +5,7 @@ import time
 from MathPhysics import MathPhysics
 from Workspace import Workspace
 from Collision import Collision
+from Spring import Spring
 
 class Physics:
 
@@ -36,3 +37,5 @@ class Physics:
                     if Collision.check(objA, objB):
                         Collision.resolve(objA, objB)
 
+            for spring in workspace.Springs:
+                spring.step()

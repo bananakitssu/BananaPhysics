@@ -11,10 +11,9 @@ import BTDPE
 current_dir = Path(__file__).resolve().parent
 target_dir = current_dir / "libraries" / "Python"
 sys.path.append(str(target_dir))
-import Object
 
 def run():
-    from BananaPhysics import Object, Air, Workspace, LoadWorkspace
+    from BananaPhysics import Object, Air, Spring, Workspace, LoadWorkspace
     from Vector3 import Vector3
 
     workspace = Workspace({
@@ -48,6 +47,9 @@ def run():
     })
 
     floor_id = workspace.add(floor)
+    
+    spring = Spring(box, floor, stiffness=15.0, rest_length=2.0, damping=0.5)
+    workspace.add_spring(spring)
 
     LoadWorkspace(workspace)
 
@@ -72,18 +74,39 @@ def run():
         {"canTransparent": False, "visible": True, "opacity": 1},
         []
     )
-    BTDPE.create_mesh("cube", box_id, {"x": 0, "y": 0, "z": 0}, {"x": 1, "y": 1, "z": 1}, {"x": 0, "y": 0, "z": 0}, False, [], "", False, False, [], {"r": 0, "g": 0, "b": 0}, {"canTransparent": False, "visible": True, "opacity": 1}, [])
+    #BTDPE.create_mesh("cube", box_id, {"x": 0, "y": 0, "z": 0}, {"x": 1, "y": 1, "z": 1}, {"x": 0, "y": 0, "z": 0}, False, [], "", False, False, [], {"r": 0, "g": 0, "b": 0}, {"canTransparent": False, "visible": True, "opacity": 1}, [])
     BTDPE_R.start()
     
     while True:
-        newBoxPosition = workspace.Objects[box_id].Position
-        newFloorPosition = workspace.Objects[floor_id].Position
-        BTDPE.meshes[box_id]["mesh_position"]["x"] = newBoxPosition.x
-        BTDPE.meshes[box_id]["mesh_position"]["y"] = newBoxPosition.y
-        BTDPE.meshes[box_id]["mesh_position"]["z"] = newBoxPosition.z
-        BTDPE.meshes[floor_id]["mesh_position"]["x"] = newFloorPosition.x
-        BTDPE.meshes[floor_id]["mesh_position"]["y"] = newFloorPosition.y
-        BTDPE.meshes[floor_id]["mesh_position"]["z"] = newFloorPosition.z
+        for obj in workspace.Objects.values():
+            objBTDPE = next((item for item in BTDPE.meshes.values() if item is not None and isinstance(item, dict) and item.get('name') == obj.uuid), None)
+            if objBTDPE is None:
+                BTDPE.create_mesh(
+                    "cube",
+                    obj.uuid,
+                    {"x": obj.Position.x, "y": obj.Position.y, "z": obj.Position.z},
+                    {"x": obj.Size.x, "y": obj.Size.y, "z": obj.Size.z},
+                    {"x": 0, "y": 0, "z": 0},
+                    False, [], "", False, False, [],
+                    {"r": 0, "g": 0, "b": 0},
+                    {"canTransparent": False, "visible": True, "opacity": 1},
+                    []
+                )
+            else:
+                objBTDPE["mesh_position"]["x"] = obj.Position.x
+                objBTDPE["mesh_position"]["y"] = obj.Position.y
+                objBTDPE["mesh_position"]["z"] = obj.Position.z
+                objBTDPE["mesh_size"]["x"] = obj.Size.x
+                objBTDPE["mesh_size"]["y"] = obj.Size.y
+                objBTDPE["mesh_size"]["z"] = obj.Size.z
+        #newBoxPosition = workspace.Objects[box_id].Position
+        #newFloorPosition = workspace.Objects[floor_id].Position
+        #BTDPE.meshes[box_id]["mesh_position"]["x"] = newBoxPosition.x
+        #BTDPE.meshes[box_id]["mesh_position"]["y"] = newBoxPosition.y
+        #BTDPE.meshes[box_id]["mesh_position"]["z"] = newBoxPosition.z
+        #BTDPE.meshes[floor_id]["mesh_position"]["x"] = newFloorPosition.x
+        #BTDPE.meshes[floor_id]["mesh_position"]["y"] = newFloorPosition.y
+        #BTDPE.meshes[floor_id]["mesh_position"]["z"] = newFloorPosition.z
         time.sleep(1/60)
         
 run()

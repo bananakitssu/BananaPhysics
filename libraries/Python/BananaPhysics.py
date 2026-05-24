@@ -7,6 +7,7 @@ from Physics import Physics
 from Workspace import Workspace
 from Object import Object
 from Air import Air
+from Spring import Spring
 
 TICKS_PER_SECOND = 60
 
